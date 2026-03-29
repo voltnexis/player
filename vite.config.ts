@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => {
         entry: 'src/embed/index.tsx',
         name: 'VoltNexisPlayer',
         fileName: () => `player.js`,
-        formats: ['umd']
+        formats: ['iife']
       },
       rollupOptions: {
         external: [],

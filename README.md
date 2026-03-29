@@ -14,20 +14,18 @@
 Just add the script tag to your site and use the custom element:
 
 ```html
-<!-- Load the latest version -->
-<script src="https://cdn.jsdelivr.net/gh/user/vnplayer/dist/player.js"></script>
+<!-- Load the latest version (Cached up to 24h) -->
+<script src="https://cdn.jsdelivr.net/gh/voltnexis/player/dist/player.js"></script>
 
-<!-- OR Load a specific version -->
-<script src="https://cdn.jsdelivr.net/gh/user/vnplayer/dist/v1.0/player.js"></script>
+<!-- OR Load a specific version (Recommended for stability) -->
+<script src="https://cdn.jsdelivr.net/gh/voltnexis/player/dist/v1.0/player.js"></script>
 
-<voltnexis-player 
-  src="your-video.mp4" 
-  title="My Awesome Video"
-  primary-color="#00ffd5"
-  subtitle-en="english-subs.vtt"
-  subtitle-es="spanish-subs.vtt"
-></voltnexis-player>
+<!-- OR Bypass cache for recent updates (Using branch or commit hash) -->
+<script src="https://cdn.jsdelivr.net/gh/voltnexis/player@main/dist/player.js"></script>
 ```
+
+> [!TIP]
+> **JSDelivr Caching**: By default, JSDelivr caches files for up to 24 hours. To ensure you see your latest changes immediately after pushing to GitHub, use the `@main` tag (e.g., `voltnexis/player@main/dist/player.js`) or a version tag (e.g., `voltnexis/player@v1.1/dist/player.js`).
 
 ## ✨ Features
 
