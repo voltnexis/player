@@ -33,10 +33,10 @@ export const ShareModal: React.FC<ShareModalProps> = ({ url, onClose }) => {
   ];
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-300">
       <div 
         ref={modalRef}
-        className="w-full max-w-sm bg-zinc-900 border border-white/10 rounded-2xl shadow-2xl p-6 animate-in zoom-in-95 duration-200"
+        className="w-full max-w-sm bg-zinc-950/90 backdrop-blur-3xl border border-white/10 rounded-[32px] shadow-[0_30px_70px_rgba(0,0,0,0.8)] p-8 animate-in zoom-in-95 duration-300"
       >
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
@@ -62,10 +62,10 @@ export const ShareModal: React.FC<ShareModalProps> = ({ url, onClose }) => {
               rel="noopener noreferrer"
               className="flex flex-col items-center gap-2 group cursor-pointer"
             >
-              <div className={`${option.color} p-3 rounded-2xl text-white shadow-lg group-hover:scale-110 transition-transform`}>
-                <option.icon size={24} />
+              <div className={`${option.color} p-4 rounded-3xl text-white shadow-xl group-hover:scale-110 active:scale-95 transition-all duration-300`}>
+                <option.icon size={26} />
               </div>
-              <span className="text-xs text-zinc-400 group-hover:text-white transition-colors">{option.name}</span>
+              <span className="text-[11px] font-semibold text-zinc-400 group-hover:text-white transition-colors">{option.name}</span>
             </a>
           ))}
         </div>
@@ -76,13 +76,13 @@ export const ShareModal: React.FC<ShareModalProps> = ({ url, onClose }) => {
             <input 
               readOnly 
               value={url}
-              className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 pr-12 text-sm text-zinc-300 focus:outline-none group-focus-within:border-(--color-primary)/30 transition-all font-mono"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 px-5 pr-12 text-[13px] text-zinc-300 focus:outline-none group-focus-within:border-(--color-primary)/40 transition-all font-mono tracking-tight"
             />
             <button 
               onClick={handleCopy}
-              className={`absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg transition-all ${copied ? 'bg-green-500 text-white' : 'hover:bg-white/10 text-zinc-400 hover:text-white'}`}
+              className={`absolute right-2 top-1/2 -translate-y-1/2 p-2.5 rounded-xl transition-all ${copied ? 'bg-green-500 text-white' : 'hover:bg-white/10 text-zinc-400 hover:text-white'}`}
             >
-              {copied ? <Check size={16} /> : <Copy size={16} />}
+              {copied ? <Check size={18} /> : <Copy size={18} />}
             </button>
           </div>
         </div>

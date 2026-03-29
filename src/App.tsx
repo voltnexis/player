@@ -9,13 +9,14 @@ function App() {
           <p className="text-zinc-400">Open source, high-performance HTML5 video player</p>
         </header>
 
-        <div className="rounded-2xl overflow-hidden shadow-2xl border border-zinc-800 bg-black aspect-video">
+        <div className="rounded-2xl overflow-hidden shadow-2xl border border-zinc-800 bg-black">
           {/* @ts-ignore */}
           <voltnexis-player 
             src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
             title="Demo Video - Big Buck Bunny"
             primary-color="#00ffd5"
             subtitle-en="https://raw.githubusercontent.com/vjs/video.js/main/docs/examples/elephantsdream/captions.en.vtt"
+            height="400px"
           ></voltnexis-player>
         </div>
 

@@ -85,6 +85,30 @@ export const GestureHandler: React.FC<GestureHandlerProps> = ({
     }
   }, [handleVideoSpeed, seek, showControls, state.playbackSpeed, toggleFullscreen, togglePlay]);
 
+  const lastTapRef = useRef<{ x: number; time: number } | null>(null);
+
+  const handleDoubleClick = (e: React.MouseEvent | { clientX: number }) => {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const x = e.clientX - rect.left;
+    const width = rect.width;
+    
+    // Left 30% for seek backward
+    if (x < width * 0.3) {
+      seek(-5);
+      showControls();
+    } 
+    // Right 30% for seek forward
+    else if (x > width * 0.7) {
+      seek(5);
+      showControls();
+    } 
+    // Center for fullscreen
+    else {
+      toggleFullscreen();
+    }
+  };
+
   // Mobile Handlers
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartY.current = e.touches[0].clientY;
@@ -105,12 +129,25 @@ export const GestureHandler: React.FC<GestureHandlerProps> = ({
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
-    // If it was a quick tap, and not a hold, toggle play/pause
-    if (!isHandlingHold.current) {
-        // We might want to show controls on tap instead of pausing immediately if controls are hidden,
-        // but requirement says: Mobile: Tip -> play/pause
-        togglePlay();
-        showControls();
+    const now = Date.now();
+    const touch = e.changedTouches[0];
+    const x = touch.clientX;
+    
+    // Double tap detection
+    if (lastTapRef.current && 
+        now - lastTapRef.current.time < 300 && 
+        Math.abs(x - lastTapRef.current.x) < 30) {
+      
+      handleDoubleClick({ clientX: x });
+      lastTapRef.current = null; // Reset
+    } else {
+      lastTapRef.current = { x, time: now };
+      
+      // If it was a quick tap, and not a hold, toggle play/pause
+      if (!isHandlingHold.current) {
+          togglePlay();
+          showControls();
+      }
     }
     clearHold();
   };
@@ -123,10 +160,6 @@ export const GestureHandler: React.FC<GestureHandlerProps> = ({
       toggleFullscreen(); 
       touchStartY.current = e.touches[0].clientY; // Reset to avoid multiple triggers
     }
-  };
-
-  const handleDoubleClick = () => {
-    toggleFullscreen();
   };
 
   return (
@@ -150,3 +183,4 @@ export const GestureHandler: React.FC<GestureHandlerProps> = ({
     </div>
   );
 };
+

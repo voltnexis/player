@@ -1,65 +1,84 @@
-# ⚡ VNPlayer (VoltNexis Player)
+# ⚡ VoltNexis Player v2.6
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![JSDelivr](https://img.shields.io/badge/JSDelivr-CDN-orange)](https://www.jsdelivr.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-turquoise.svg)](https://opensource.org/licenses/MIT)
+[![Release](https://img.shields.io/badge/Release-v2.6.0-blue.svg)](https://github.com/your-repo/releases)
 
-**VNPlayer** is a modern, high-performance, and developer-friendly open-source HTML5 video player. It features a stunning glassmorphism UI, advanced mobile gestures, multi-language subtitle support, and versioned distribution via JSDelivr.
+**VoltNexis Player** is a state-of-the-art, glassmorphic HTML5 video player built for the modern web. It combines elite aesthetics with high-performance interaction, featuring a persistent session-based feedback system and pro-grade gesture controls.
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Experience the Difference
 
-### Using JSDelivr CDN (Recommended)
+### 💎 Elite Aesthetics
+- **Glassmorphic UI**: Ultra-premium `backdrop-blur` and translucent designs that adapt to any background.
+- **Unified Branding**: Every interaction (Like, Comment, Chat) syncs perfectly with your `primaryColor`.
+- **Intelligent Visuals**: Vibrant colors only appear when *you* interact, keeping the focus entirely on your content.
 
-Just add the script tag to your site and use the custom element:
+### 🧠 Smart Session Feedback
+- **Always Remembered**: Your Like/Dislike/Comment/Chat states stay active even if you refresh the page.
+- **Privacy First**: Preferences are saved in `sessionStorage`—choices are cleared only when you close the tab.
+- **Mutual Exclusion**: Smart logic keeps your choices clean (Liking automatically removes a Dislike).
+
+### ⚡ Pro Gestures & Shortcuts
+- **Accumulative Seeking**: Seek 5s, 10s, 15s... instantly with rapid inputs or mobile side-taps.
+- **Mobile Optimized**: Side-aware double-tap gestures for seamless mobile navigation.
+- **Top Shortcuts**: `K` (Play/Pause), `J/L` (Seek ±10s), `M` (Mute), `F` (Fullscreen).
+
+---
+
+## 🛠️ How to Use
+
+### 1. Basic Embedding
+Simply add the tag to your page. You can customize the look and feel instantly:
 
 ```html
-<!-- Load the latest version (Cached up to 24h) -->
-<script src="https://cdn.jsdelivr.net/gh/voltnexis/player/dist/player.js"></script>
-
-<!-- OR Load a specific version (Recommended for stability) -->
-<script src="https://cdn.jsdelivr.net/gh/voltnexis/player/dist/v1.0/player.js"></script>
-
-<!-- OR Bypass cache for recent updates (Using branch or commit hash) -->
-<script src="https://cdn.jsdelivr.net/gh/voltnexis/player@main/dist/player.js"></script>
+<vn-player 
+  src="path/to/video.mp4" 
+  primary-color="#00ffd5" 
+  clicktitle="My Premium Content">
+</vn-player>
 ```
 
-> [!TIP]
-> **JSDelivr Caching**: By default, JSDelivr caches files for up to 24 hours. To ensure you see your latest changes immediately after pushing to GitHub, use the `@main` tag (e.g., `voltnexis/player@main/dist/player.js`) or a version tag (e.g., `voltnexis/player@v1.1/dist/player.js`).
-
-## ✨ Features
-
-- 💎 **Premium UI**: Modern glassmorphism design with smooth animations.
-- 📱 **Native Gestures**: Double-tap to seek, long-press for 2x speed, and swipe gestures.
-- 💬 **Multi-Language Subtitles**: Support for multiple VTT tracks with easy switching.
-- 🎨 **Deep Customization**: Easily change primary colors, hide UI elements (like `hide="minimized"`), and customize logic via props.
-- 🚀 **CDN Delivery**: High-speed delivery via JSDelivr with versioned support.
-
-## 🛠️ Configuration
-
-| Attribute | Description | Default |
-|-----------|-------------|---------|
-| `src` | Video source URL | - |
-| `title` | Video title | "VoltNexis Player" |
-| `primary-color` | UI accent color | `#00ffd5` |
-| `subtitle-[lang]` | Subtitle Vtt for a specific language | - |
-| `hide` | Comma-separated list to hide UI (e.g., `minimized`, `like`, `share`, `menu-icon`) | `[]` |
-
-### The `hide="minimized"` Mode
-Use `hide="minimized"` to keep the secondary actions (Like, Share, etc.) hidden by default. They will only show when the user clicks the menu icon.
-
-## 📂 Repository Structure
-If you are cloning this for your own use, these are the essential files:
-- `dist/player.js`: The bundled player ready for CDN.
-- `dist/vX.X/player.js`: Versioned builds.
-- `src/`: Source code (React + Tailwind).
-
-## 📄 License
-
-VNPlayer is open-source software licensed under the **MIT license**.
+### 2. Available Properties
+| Property | Description | Default |
+| :--- | :--- | :--- |
+| `src` | URL of the video file | Required |
+| `primary-color` | The accent color for all UI elements | `#00ffd5` |
+| `clicktitle` | The title shown in the player header | "VoltNexis Player" |
+| `auto` | Auto-play the video | `false` |
 
 ---
 
-<p align="center">
-  Built with ❤️ by <a href="https://github.com/voltnexis">VoltNexis</a>
-</p>
+## 📥 Download & Installation
+
+### Option A: Clone & Build (Recommended)
+1. **Clone the repo**:
+   ```bash
+   git clone https://github.com/your-username/voltnexis-player.git
+   ```
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+3. **Run local dev server**:
+   ```bash
+   npm run dev
+   ```
+
+### Option B: Download Release
+Visit the [Releases](https://github.com/your-username/voltnexis-player/releases) page to download the latest compiled `dist/` folder containing the ready-to-use JS/CSS files.
+
+---
+
+## 📂 Repository Structure
+To maintain this project on GitHub, please ensure the following files are uploaded:
+- `src/` - All React components and core logic.
+- `public/` - Static assets and icons.
+- `package.json` - Project metadata and dependencies.
+- `index.html` - Main demo page.
+- `vite.config.ts` - Build and optimization configurations.
+- `README.md` - (This file) Documentation for your users.
+
+---
+
+*Designed with ❤️ by VoltNexis Team*

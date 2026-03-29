@@ -20,13 +20,92 @@ export const useVideoPlayer = () => {
     isBuffering: false,
     currentQuality: 'Auto',
     currentSubtitle: 'off',
+    seekingFeedback: { direction: 'forward', visible: false, accumulatedValue: 0 },
+    volumeFeedback: { volume: 1, visible: false },
+    isLiked: false,
+    isDisliked: false,
+    isCommentActive: false,
+    isChatActive: false,
   });
+  
+  const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const volumeFeedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastSeekTimeRef = useRef<number>(0);
 
-  const controlsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const getFeedbackKey = (src: string) => `vn_feedback_${btoa(src).substring(0, 16)}`;
 
   const updateState = (updates: Partial<PlayerState>) => {
     setState((prev) => ({ ...prev, ...updates }));
   };
+
+  const loadFeedback = (src: string) => {
+    if (!src) return;
+    try {
+      const key = getFeedbackKey(src);
+      const saved = JSON.parse(sessionStorage.getItem(key) || '{}');
+      updateState({
+        isLiked: !!saved.isLiked,
+        isDisliked: !!saved.isDisliked,
+        isCommentActive: !!saved.isCommentActive,
+        isChatActive: !!saved.isChatActive,
+      });
+    } catch (e) {
+      console.warn("Failed to load feedback from sessionStorage:", e);
+    }
+  };
+
+  const toggleFeedback = (src: string, field: 'isLiked' | 'isDisliked' | 'isCommentActive' | 'isChatActive') => {
+    if (!src) return;
+    setState((prev) => {
+      const newState = { ...prev, [field]: !prev[field] };
+      
+      // Mutual exclusion: Like and Dislike
+      if (field === 'isLiked' && newState.isLiked) newState.isDisliked = false;
+      if (field === 'isDisliked' && newState.isDisliked) newState.isLiked = false;
+      
+      try {
+        const key = getFeedbackKey(src);
+        sessionStorage.setItem(key, JSON.stringify({
+          isLiked: newState.isLiked,
+          isDisliked: newState.isDisliked,
+          isCommentActive: newState.isCommentActive,
+          isChatActive: newState.isChatActive,
+        }));
+      } catch (e) {
+        console.warn("Failed to save feedback to sessionStorage:", e);
+      }
+      
+      return newState;
+    });
+  };
+
+  const triggerSeekingFeedback = (direction: 'forward' | 'backward') => {
+    const now = Date.now();
+    const isQuickSeek = now - lastSeekTimeRef.current < 800 && state.seekingFeedback?.direction === direction;
+    const newValue = isQuickSeek ? (state.seekingFeedback?.accumulatedValue || 0) + 5 : 5;
+    
+    updateState({ 
+      seekingFeedback: { direction, visible: true, accumulatedValue: newValue } 
+    });
+    lastSeekTimeRef.current = now;
+
+    if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
+    feedbackTimeoutRef.current = setTimeout(() => {
+      updateState({ 
+        seekingFeedback: { direction, visible: false, accumulatedValue: 0 } 
+      });
+    }, 800);
+  };
+
+  const triggerVolumeFeedback = (volume: number) => {
+    updateState({ volumeFeedback: { volume, visible: true } });
+    if (volumeFeedbackTimeoutRef.current) clearTimeout(volumeFeedbackTimeoutRef.current);
+    volumeFeedbackTimeoutRef.current = setTimeout(() => {
+      updateState({ volumeFeedback: { volume, visible: false } });
+    }, 800);
+  };
+
+  const controlsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleSubtitleChange = (lang: string) => {
     if (videoRef.current) {
@@ -89,11 +168,6 @@ export const useVideoPlayer = () => {
     updateState({ progress: manualChange, currentTime: newTime });
   };
 
-  const seek = (seconds: number) => {
-    if (!videoRef.current) return;
-    videoRef.current.currentTime = Math.min(Math.max(videoRef.current.currentTime + seconds, 0), videoRef.current.duration);
-  };
-
   const handleVideoSpeed = (speed: number) => {
     if (videoRef.current) {
       videoRef.current.playbackRate = speed;
@@ -105,15 +179,6 @@ export const useVideoPlayer = () => {
     if (videoRef.current) {
       videoRef.current.muted = !videoRef.current.muted;
       updateState({ isMuted: videoRef.current.muted, volume: videoRef.current.muted ? 0 : 1 });
-    }
-  };
-
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = Number(e.target.value);
-    if (videoRef.current) {
-      videoRef.current.volume = newVolume;
-      videoRef.current.muted = newVolume === 0;
-      updateState({ volume: newVolume, isMuted: newVolume === 0 });
     }
   };
 
@@ -153,25 +218,33 @@ export const useVideoPlayer = () => {
     updateState({ isTheaterMode: !state.isTheaterMode });
   };
 
+  const seek = (seconds: number) => {
+    if (!videoRef.current) return;
+    const direction = seconds > 0 ? 'forward' : 'backward';
+    triggerSeekingFeedback(direction);
+    videoRef.current.currentTime = Math.min(Math.max(videoRef.current.currentTime + seconds, 0), videoRef.current.duration);
+  };
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement> | number) => {
+    const newVolume = typeof e === 'number' ? e : Number(e.target.value);
+    if (videoRef.current) {
+      videoRef.current.volume = newVolume;
+      videoRef.current.muted = newVolume === 0;
+      updateState({ volume: newVolume, isMuted: newVolume === 0 });
+      triggerVolumeFeedback(newVolume);
+    }
+  };
+
+  const seekTo = (time: number) => {
+    if (!videoRef.current) return;
+    videoRef.current.currentTime = Math.min(Math.max(time, 0), videoRef.current.duration);
+  };
+
+  // ... return statement with new functions ...
   return {
-    videoRef,
-    containerRef,
-    state,
-    updateState,
-    togglePlay,
-    handleOnPlay,
-    handleOnPause,
-    handleTimeUpdate,
-    handleLoadedMetadata,
-    handleVideoProgress,
-    handleVideoSpeed,
-    toggleMute,
-    handleVolumeChange,
-    toggleFullscreen,
-    toggleTheater,
-    toggleSettings,
-    showControls,
-    seek,
-    handleSubtitleChange
+    videoRef, containerRef, state, updateState, togglePlay, handleOnPlay, handleOnPause,
+    handleTimeUpdate, handleLoadedMetadata, handleVideoProgress, handleVideoSpeed,
+    toggleMute, handleVolumeChange, toggleFullscreen, toggleTheater, toggleSettings,
+    showControls, seek, seekTo, handleSubtitleChange, toggleFeedback, loadFeedback
   };
 };

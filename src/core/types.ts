@@ -19,7 +19,13 @@ export interface VoltNexisPlayerProps {
   onChat?: (ctx?: { like?: () => void, dislike?: () => void, share?: () => void }) => void;
   onComment?: (ctx?: { like?: () => void, dislike?: () => void, share?: () => void }) => void;
   onOpenMenu?: () => void;
+  onNext?: () => void;
+  onPrev?: () => void;
+  onNextChapter?: () => void;
+  onPrevChapter?: () => void;
   clicktitle?: string;
+  width?: string | number;
+  height?: string | number;
 }
 
 export interface PlayerState {
@@ -37,4 +43,10 @@ export interface PlayerState {
   isBuffering: boolean;
   currentQuality: string;
   currentSubtitle: string; // 'off', 'auto' or lang code
+  seekingFeedback?: { direction: 'forward' | 'backward'; visible: boolean; accumulatedValue: number };
+  volumeFeedback?: { volume: number; visible: boolean };
+  isLiked: boolean;
+  isDisliked: boolean;
+  isCommentActive: boolean;
+  isChatActive: boolean;
 }
