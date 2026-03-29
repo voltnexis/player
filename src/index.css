@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: var(--player-primary, #00ffd5);
+  --color-player-bg: var(--player-bg, rgba(0, 0, 0, 0.9));
+}
+
+@layer base {
+  :root {
+    --player-primary: #00ffd5;
+    --player-bg: rgba(0, 0, 0, 0.9);
+  }
+  
+  body {
+    @apply bg-zinc-950 text-white m-0 min-h-screen font-sans;
+  }
+}
+
+/* Custom hide scrollbar for settings */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
