@@ -28,7 +28,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, onClose, copyUrl
       style={{ top: y, left: x }}
     >
       <div className="px-4 py-2 text-[10px] font-bold text-zinc-500 uppercase tracking-widest border-b border-white/5 mb-1">
-        VoltNexis Player v2.2
+        VoltNexis Player v2.6
       </div>
       
       <button 
