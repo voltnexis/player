@@ -77,12 +77,15 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ state, handleVideoProg
 
         {/* Current Progress */}
         <div
-          className="absolute top-0 left-0 h-full rounded-full transition-all"
+          className="absolute top-0 left-0 h-full rounded-full pointer-events-none"
           style={{ width: `${state.progress}%`, backgroundColor: 'var(--player-primary)', boxShadow: '0 0 10px var(--player-primary)' }}
-        >
-          {/* Thumb */}
-          <div className={`absolute top-1/2 -right-2 -translate-y-1/2 w-4 h-4 bg-white rounded-full ${isMobile ? 'scale-100 shadow-lg' : 'scale-0 group-hover:scale-100'} shadow-[0_0_10px_rgba(255,255,255,0.5)] transition-all duration-300 border-2 border-(--player-primary)`}></div>
-        </div>
+        ></div>
+        
+        {/* Thumb */}
+        <div 
+          className={`absolute top-1/2 -ml-2 -mt-2 w-4 h-4 bg-white rounded-full ${isMobile ? 'scale-100 shadow-lg' : 'scale-0 group-hover:scale-100'} shadow-[0_0_10px_rgba(255,255,255,0.5)] transition-transform duration-300 border-2 pointer-events-none`}
+          style={{ left: `${state.progress}%`, borderColor: 'var(--player-primary)' }}
+        ></div>
 
         {/* Invisible Range Input for Dragging */}
         <input
