@@ -1,7 +1,7 @@
 # ⚡ VoltNexis Player v2.6
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-turquoise.svg)](https://opensource.org/licenses/MIT)
-[![Release](https://img.shields.io/badge/Release-v2.6.0-blue.svg)](https://github.com/your-repo/releases)
+[![Release](https://img.shields.io/badge/Release-v2.6.0-blue.svg)]([https://github.com/voltnexis/player/releases/v2.6])
 
 **VoltNexis Player** is a state-of-the-art, glassmorphic HTML5 video player built for the modern web. It combines elite aesthetics with high-performance interaction, featuring a persistent session-based feedback system and pro-grade gesture controls.
 
