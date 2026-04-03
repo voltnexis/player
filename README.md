@@ -54,7 +54,7 @@ Simply add the tag to your page. You can customize the look and feel instantly:
 ### Option A: Clone & Build (Recommended)
 1. **Clone the repo**:
    ```bash
-   git clone https://github.com/your-username/voltnexis-player.git
+   git clone https://github.com/voltnexis/player.git
    ```
 2. **Install dependencies**:
    ```bash
