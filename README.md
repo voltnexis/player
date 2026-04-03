@@ -32,11 +32,11 @@
 Simply add the tag to your page. You can customize the look and feel instantly:
 
 ```html
-<vn-player 
+<voltnexis-player 
   src="path/to/video.mp4" 
   primary-color="#00ffd5" 
   clicktitle="My Premium Content">
-</vn-player>
+</voltnexis-player>
 ```
 
 ### 2. Available Properties
