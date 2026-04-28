@@ -9,6 +9,7 @@ interface GestureHandlerProps {
   handleVideoSpeed: (speed: number) => void;
   seek: (seconds: number) => void;
   showControls: () => void;
+  updateState: (updates: Partial<PlayerState>) => void;
 }
 
 export const GestureHandler: React.FC<GestureHandlerProps> = ({
@@ -19,10 +20,12 @@ export const GestureHandler: React.FC<GestureHandlerProps> = ({
   handleVideoSpeed,
   seek,
   showControls,
+  updateState,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef<number>(0);
   const holdTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const singleTapTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isHandlingHold = useRef(false);
   
   // Desktop keydown handlers
@@ -35,7 +38,9 @@ export const GestureHandler: React.FC<GestureHandlerProps> = ({
         case 'Space':
           e.preventDefault();
           if (!e.repeat) {
-            handleVideoSpeed(2); // Temporary 2x speed
+            // Store the current speed to restore it later
+            (window as any)._preHoldSpeed = state.playbackSpeed;
+            handleVideoSpeed(2); 
           }
           break;
         case 'ArrowRight':
@@ -61,13 +66,13 @@ export const GestureHandler: React.FC<GestureHandlerProps> = ({
     const handleKeyUp = (e: KeyboardEvent) => {
       if (e.code === 'Space') {
         e.preventDefault();
-        handleVideoSpeed(1); // Restore normal speed
-        // If it was a quick press, maybe toggle play/pause (but space usually just plays/pauses). 
-        // We'll treat short space press for play/pause if needed, or stick to req: Space hold -> 2x speed.
-        // Let's implement quick press play/pause:
-        if (state.playbackSpeed !== 2) {
-          togglePlay();
-        }
+        const preSpeed = (window as any)._preHoldSpeed ?? 1;
+        handleVideoSpeed(preSpeed);
+        
+        // If it was a quick press (not much time passed or not a long hold), toggle play/pause
+        // Note: PlayerContainer also toggles play on space down, so we might need to be careful
+        // but typically togglePlay twice would just resume.
+        // Actually, if we just want to fix the speed reset, restoring preSpeed is enough.
       }
     };
 
@@ -88,6 +93,7 @@ export const GestureHandler: React.FC<GestureHandlerProps> = ({
   const lastTapRef = useRef<{ x: number; time: number } | null>(null);
 
   const handleDoubleClick = (e: React.MouseEvent | { clientX: number }) => {
+    if (singleTapTimeoutRef.current) clearTimeout(singleTapTimeoutRef.current);
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
     const x = e.clientX - rect.left;
@@ -116,15 +122,19 @@ export const GestureHandler: React.FC<GestureHandlerProps> = ({
     // Touch hold -> 2x speed
     holdTimeoutRef.current = setTimeout(() => {
       isHandlingHold.current = true;
+      (window as any)._preHoldSpeed = state.playbackSpeed;
       handleVideoSpeed(2);
-    }, 500); // 500ms for hold
+      updateState({ isHolding2x: true });
+    }, 500); 
   };
 
   const clearHold = () => {
     if (holdTimeoutRef.current) clearTimeout(holdTimeoutRef.current);
     if (isHandlingHold.current) {
-      handleVideoSpeed(1);
+      const preSpeed = (window as any)._preHoldSpeed ?? 1;
+      handleVideoSpeed(preSpeed);
       isHandlingHold.current = false;
+      updateState({ isHolding2x: false });
     }
   };
 
@@ -138,6 +148,7 @@ export const GestureHandler: React.FC<GestureHandlerProps> = ({
         now - lastTapRef.current.time < 300 && 
         Math.abs(x - lastTapRef.current.x) < 30) {
       
+      if (singleTapTimeoutRef.current) clearTimeout(singleTapTimeoutRef.current);
       handleDoubleClick({ clientX: x });
       lastTapRef.current = null; // Reset
     } else {
@@ -145,8 +156,12 @@ export const GestureHandler: React.FC<GestureHandlerProps> = ({
       
       // If it was a quick tap, and not a hold, toggle play/pause
       if (!isHandlingHold.current) {
-          togglePlay();
-          showControls();
+          if (singleTapTimeoutRef.current) clearTimeout(singleTapTimeoutRef.current);
+          singleTapTimeoutRef.current = setTimeout(() => {
+            togglePlay();
+            showControls();
+            lastTapRef.current = null;
+          }, 250);
       }
     }
     clearHold();
@@ -169,9 +184,16 @@ export const GestureHandler: React.FC<GestureHandlerProps> = ({
       tabIndex={0}
       onMouseMove={showControls}
       onClick={(e) => {
-        // Only toggle on single click desktop. Mobile touch handles its own tap.
-        if ((e.nativeEvent as PointerEvent).pointerType === 'mouse') togglePlay();
-        showControls();
+        // Only toggle on single click desktop.
+        if ((e.nativeEvent as PointerEvent).pointerType === 'mouse') {
+          if (singleTapTimeoutRef.current) clearTimeout(singleTapTimeoutRef.current);
+          singleTapTimeoutRef.current = setTimeout(() => {
+            togglePlay();
+            showControls();
+          }, 250);
+        } else {
+          showControls();
+        }
       }}
       onDoubleClick={handleDoubleClick}
       onTouchStart={handleTouchStart}

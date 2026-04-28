@@ -10,7 +10,7 @@ class VoltNexisPlayerElement extends HTMLElement {
   static get observedAttributes() {
     return [
       'src', 'auto', 'title', 'theme', 'primary-color', 'progress-color', 
-      'preview', 'subtitle', 'share-url', 'hide', 'width', 'height'
+      'preview', 'preview-vtt', 'subtitle', 'share-url', 'hide', 'width', 'height'
     ];
   }
 
@@ -56,7 +56,7 @@ class VoltNexisPlayerElement extends HTMLElement {
       theme: (this.getAttribute('theme') as 'dark' | 'light') || 'dark',
       primaryColor: this.getAttribute('primary-color') || undefined,
       progressColor: this.getAttribute('progress-color') || undefined,
-      previewVtt: this.getAttribute('preview') || undefined,
+      previewVtt: this.getAttribute('preview-vtt') || this.getAttribute('preview') || undefined,
       subtitleVtt: this.getAttribute('subtitle') || undefined,
       shareUrl: this.getAttribute('share-url') || undefined,
       hide: this.getAttribute('hide')?.split(',').map(s => s.trim()) || [],

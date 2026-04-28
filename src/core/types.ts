@@ -49,4 +49,5 @@ export interface PlayerState {
   isDisliked: boolean;
   isCommentActive: boolean;
   isChatActive: boolean;
+  isHolding2x: boolean;
 }
