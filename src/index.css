@@ -24,3 +24,35 @@
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+/* Subtitle Movement Logic */
+video::-webkit-media-text-track-display {
+  transition: transform 0.3s ease-in-out;
+  transform: translateY(0);
+}
+
+::cue {
+  transition: transform 0.3s ease-in-out;
+  transform: translateY(0);
+}
+
+.controls-visible video::-webkit-media-text-track-display {
+  transform: translateY(-85px);
+}
+.controls-visible video::cue {
+  transform: translateY(-85px);
+}
+
+.controls-visible.is-mobile:not(.is-fullscreen) video::-webkit-media-text-track-display {
+  transform: translateY(-50px);
+}
+.controls-visible.is-mobile:not(.is-fullscreen) video::cue {
+  transform: translateY(-50px);
+}
+
+.controls-visible.is-mobile.is-fullscreen video::-webkit-media-text-track-display {
+  transform: translateY(-85px);
+}
+.controls-visible.is-mobile.is-fullscreen video::cue {
+  transform: translateY(-85px);
+}

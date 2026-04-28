@@ -11,12 +11,12 @@ function App() {
 
         <div className="rounded-2xl overflow-hidden shadow-2xl border border-zinc-800 bg-black">
           {/* @ts-ignore */}
-          <voltnexis-player 
-            src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          <voltnexis-player
+            src="https://video.blender.org/static/web-videos/bf1f3fb5-b119-4f9f-9930-8e20e892b898-480.mp4"
             title="Demo Video - Big Buck Bunny"
             primary-color="#00ffd5"
-            subtitle-en="https://raw.githubusercontent.com/vjs/video.js/main/docs/examples/elephantsdream/captions.en.vtt"
-            height="400px"
+            subtitle-en="/big-buck-bunny-en.vtt"
+            preview-vtt="/bbb-thumbnails.vtt"
           ></voltnexis-player>
         </div>
 

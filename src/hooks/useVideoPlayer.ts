@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { PlayerState } from '../core/types';
+import { safeSessionStorage } from '../core/storage';
 
 export const useVideoPlayer = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -26,6 +27,7 @@ export const useVideoPlayer = () => {
     isDisliked: false,
     isCommentActive: false,
     isChatActive: false,
+    isHolding2x: false,
   });
   
   const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -42,7 +44,7 @@ export const useVideoPlayer = () => {
     if (!src) return;
     try {
       const key = getFeedbackKey(src);
-      const saved = JSON.parse(sessionStorage.getItem(key) || '{}');
+      const saved = JSON.parse(safeSessionStorage.getItem(key) || '{}');
       updateState({
         isLiked: !!saved.isLiked,
         isDisliked: !!saved.isDisliked,
@@ -65,7 +67,7 @@ export const useVideoPlayer = () => {
       
       try {
         const key = getFeedbackKey(src);
-        sessionStorage.setItem(key, JSON.stringify({
+        safeSessionStorage.setItem(key, JSON.stringify({
           isLiked: newState.isLiked,
           isDisliked: newState.isDisliked,
           isCommentActive: newState.isCommentActive,
