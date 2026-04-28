@@ -8,7 +8,7 @@ import { ProgressBar } from './ProgressBar';
 import { SettingsPanel } from './SettingsPanel';
 import { ContextMenu } from './ContextMenu';
 import { ShareModal } from './ShareModal';
-import { X as CloseIcon, ChevronRight, ChevronLeft, Volume2, Volume1, VolumeX } from 'lucide-react';
+import { X as CloseIcon, ChevronRight, ChevronLeft, Volume2, Volume1, VolumeX, Settings } from 'lucide-react';
 
 export const PlayerContainer: React.FC<VoltNexisPlayerProps> = (props) => {
   const { 
@@ -138,6 +138,7 @@ export const PlayerContainer: React.FC<VoltNexisPlayerProps> = (props) => {
   }, [state, togglePlay, seek, seekTo, toggleMute, toggleFullscreen, toggleTheater, handleSubtitleChange, handleVolumeChange, handleVideoSpeed, onNext, onPrev, onNextChapter, onPrevChapter, isMobileOrTablet]);
 
   const isDesktop = !isMobileOrTablet;
+  const isMobileOnly = isMobileOrTablet && !state.isFullscreen;
 
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -225,22 +226,32 @@ export const PlayerContainer: React.FC<VoltNexisPlayerProps> = (props) => {
   return (
     <div 
       ref={containerRef} 
-      className={`overflow-hidden font-sans text-white ${layoutStyle} ${cursorStyle} ${theme === 'light' ? 'bg-zinc-100 text-black' : ''}`}
+      className={`overflow-hidden font-sans text-white ${layoutStyle} ${cursorStyle} ${theme === 'light' ? 'bg-zinc-100 text-black' : ''} group/player ${state.isHolding2x && isMobileOrTablet ? 'is-holding-2x' : ''} ${state.showControls ? 'controls-visible' : ''} ${isMobileOrTablet ? 'is-mobile' : ''} ${state.isFullscreen ? 'is-fullscreen' : ''}`}
       style={containerStyle}
       onMouseMove={showControls}
       onMouseLeave={() => { if(state.isPlaying) state.showControls = false; }}
     >
       {/* Top Title Bar */}
-      <div className={`absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/80 to-transparent z-20 transition-opacity duration-300 flex items-center justify-between ${state.showControls ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-        <div className="flex-1 min-w-0">
+      <div className={`absolute top-0 left-0 right-0 px-4 pb-4 pt-3 bg-gradient-to-b from-black/80 to-transparent z-20 transition-opacity duration-300 flex items-start justify-between pointer-events-none ${(state.showControls && !(state.isHolding2x && isMobileOrTablet)) ? 'opacity-100' : 'opacity-0'}`}>
+        <div className="flex-1 min-w-0 pr-4">
           {clicktitle ? (
              <a href={clicktitle} target="_blank" rel="noopener noreferrer" className="inline-block pointer-events-auto">
-               <h2 className="text-lg font-medium tracking-wide drop-shadow-md hover:text-(--player-primary) transition-colors truncate">{title || 'VoltNexis Player'}</h2>
+               <h2 className="text-base sm:text-lg font-medium tracking-wide drop-shadow-md hover:text-(--player-primary) transition-colors truncate max-w-[70vw]">{title || 'VoltNexis Player'}</h2>
              </a>
           ) : (
-            <h2 className="text-lg font-medium tracking-wide drop-shadow-md truncate pointer-events-none">{title || 'VoltNexis Player'}</h2>
+            <h2 className="text-sm sm:text-lg font-medium tracking-wide drop-shadow-md truncate max-w-[70vw]">{title || 'VoltNexis Player'}</h2>
           )}
         </div>
+        
+        {/* Mobile Settings Button (Top Right) */}
+        {isMobileOnly && (
+          <button 
+            onClick={toggleSettings} 
+            className="pointer-events-auto p-1.5 transition-all hover:text-(--color-primary) bg-white/5 hover:bg-white/10 rounded-full active:scale-90"
+          >
+            <Settings size={18} />
+          </button>
+        )}
       </div>
 
       <div 
@@ -254,6 +265,7 @@ export const PlayerContainer: React.FC<VoltNexisPlayerProps> = (props) => {
         handleVideoSpeed={handleVideoSpeed} 
         seek={seek} 
         showControls={showControls}
+        updateState={updateState}
       >
         <VideoElement
           ref={videoRef}
@@ -275,13 +287,19 @@ export const PlayerContainer: React.FC<VoltNexisPlayerProps> = (props) => {
         </div>
       )}
 
-      {/* Centered Play Button (When paused) */}
-      {!state.isPlaying && !state.isBuffering && (
+      {/* Centered Play/Pause Button */}
+      {!state.isBuffering && (!state.isPlaying || (isMobileOnly && state.showControls)) && !(state.isHolding2x && isMobileOrTablet) && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-          <div className="bg-black/50 p-4 rounded-full backdrop-blur-sm shadow-xl drop-shadow-2xl">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M5 3l14 9-14 9V3z"/>
-            </svg>
+          <div className="bg-black/50 p-3 sm:p-4 rounded-full backdrop-blur-sm shadow-xl drop-shadow-2xl transition-all">
+            {state.isPlaying ? (
+              <svg className="w-8 h-8 sm:w-12 sm:h-12 text-white" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+              </svg>
+            ) : (
+              <svg className="w-8 h-8 sm:w-12 sm:h-12 text-white ml-1 sm:ml-2" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 3l14 9-14 9V3z"/>
+              </svg>
+            )}
           </div>
         </div>
       )}
@@ -315,11 +333,12 @@ export const PlayerContainer: React.FC<VoltNexisPlayerProps> = (props) => {
         onComment={handleComment}
         onOpenMenu={onOpenMenu}
         isMobile={isMobileOrTablet}
+        isMobileOnly={isMobileOnly}
         isFullscreen={state.isFullscreen}
         primaryColor={primaryColor}
       >
          {/* Render progress bar inside controls wrapper for layout consistency */}
-         <div className="w-full mb-1">
+         <div className={`w-full ${isMobileOnly ? 'mb-0' : 'mb-1'}`}>
            <ProgressBar 
              state={state} 
              handleVideoProgress={handleVideoProgress} 
@@ -327,25 +346,27 @@ export const PlayerContainer: React.FC<VoltNexisPlayerProps> = (props) => {
              src={currentSrc} 
              hide={hide}
              isMobile={isMobileOrTablet}
+             isMobileOnly={isMobileOnly}
+             previewVtt={previewVtt}
            />
          </div>
        </ControlsBar>
 
        {/* Visual Feedback Overlays */}
-       {state.seekingFeedback?.visible && (
+       {state.seekingFeedback?.visible && !(state.isHolding2x && isMobileOrTablet) && (
          <div className="absolute inset-0 pointer-events-none z-[60] flex items-center">
            {state.seekingFeedback.direction === 'backward' ? (
-             <div className="pl-12 animate-in slide-in-from-left-4 fade-in duration-300">
-               <div className="flex items-center gap-4 text-white font-bold text-4xl tracking-tighter drop-shadow-lg">
-                 <ChevronLeft size={48} strokeWidth={3} />
+             <div className={`pl-6 sm:pl-12 animate-in slide-in-from-left-4 fade-in duration-300`}>
+               <div className={`flex items-center gap-2 sm:gap-4 text-white font-bold text-2xl sm:text-4xl tracking-tighter drop-shadow-lg`}>
+                 <ChevronLeft size={isMobileOrTablet ? 32 : 48} strokeWidth={3} />
                  <span>- {state.seekingFeedback.accumulatedValue}</span>
                </div>
              </div>
            ) : (
-             <div className="ml-auto pr-12 animate-in slide-in-from-right-4 fade-in duration-300">
-               <div className="flex items-center gap-4 text-white font-bold text-4xl tracking-tighter drop-shadow-lg text-right">
+             <div className={`ml-auto pr-6 sm:pr-12 animate-in slide-in-from-right-4 fade-in duration-300`}>
+               <div className={`flex items-center gap-2 sm:gap-4 text-white font-bold text-2xl sm:text-4xl tracking-tighter drop-shadow-lg text-right`}>
                  <span>+ {state.seekingFeedback.accumulatedValue}</span>
-                 <ChevronRight size={48} strokeWidth={3} />
+                 <ChevronRight size={isMobileOrTablet ? 32 : 48} strokeWidth={3} />
                </div>
              </div>
            )}

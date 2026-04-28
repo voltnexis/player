@@ -15,7 +15,7 @@ interface SettingsPanelProps {
 
 type MenuType = 'main' | 'speed' | 'quality' | 'subtitles';
 
-export const SettingsPanel: React.FC<SettingsPanelProps> = ({ 
+export const SettingsPanel: React.FC<SettingsPanelProps> = React.memo(({ 
   state, handleVideoSpeed, toggleSettings, qualities = {}, handleQualityChange,
   subtitles = [], handleSubtitleChange, isMobile
 }) => {
@@ -25,20 +25,27 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
 
   const speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
+  const iconSize = isMobile ? 16 : 19;
+  const headerPadding = isMobile ? "pt-2 pb-2" : "pt-3 pb-3";
+  const itemPadding = isMobile ? "py-2 px-3" : "py-3.5 px-3";
+  const labelText = isMobile ? "text-[11px]" : "text-[13px]";
+  const valueText = isMobile ? "text-[10px]" : "text-xs";
+  const subLabelText = isMobile ? "text-[8px]" : "text-[9px]";
+
   const MenuItem = ({ icon: Icon, label, value, onClick }: any) => (
     <button 
       onClick={onClick}
-      className="w-full flex items-center justify-between py-3.5 px-3 hover:bg-white/10 active:bg-white/15 rounded-xl transition-all group"
+      className={`w-full flex items-center justify-between ${itemPadding} hover:bg-white/10 active:bg-white/15 rounded-xl transition-all group`}
     >
       <div className="flex items-center gap-3">
         <div className="text-zinc-400 group-hover:text-(--color-primary) transition-colors">
-          <Icon size={19} strokeWidth={2.5} />
+          <Icon size={iconSize} strokeWidth={2.5} />
         </div>
-        <span className="text-[13px] font-semibold tracking-tight">{label}</span>
+        <span className={`${labelText} font-semibold tracking-tight`}>{label}</span>
       </div>
-      <div className="flex items-center gap-1.5 text-xs">
+      <div className={`flex items-center gap-1.5 ${valueText}`}>
         <span className="text-zinc-400 group-hover:text-zinc-200 transition-colors">{value}</span>
-        <ChevronRight size={15} className="text-zinc-500" />
+        <ChevronRight size={isMobile ? 14 : 15} className="text-zinc-500" />
       </div>
     </button>
   );
@@ -46,14 +53,14 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   const SubMenuItem = ({ label, isSelected, onClick, subtext }: any) => (
     <button 
       onClick={onClick}
-      className={`w-full flex items-center justify-between py-3.5 px-4 rounded-xl transition-all ${isSelected ? 'bg-(--color-primary)/15 text-(--color-primary)' : 'hover:bg-white/10 active:bg-white/15'}`}
+      className={`w-full flex items-center justify-between ${itemPadding} rounded-xl transition-all ${isSelected ? 'bg-(--color-primary)/15 text-(--color-primary)' : 'hover:bg-white/10 active:bg-white/15'}`}
     >
       <div className="flex flex-col items-start">
-        <span className="text-[13px] font-semibold tracking-tight">{label}</span>
-        {subtext && <span className="text-[9px] font-bold opacity-60 uppercase tracking-wider mt-0.5">{subtext}</span>}
+        <span className={`${labelText} font-semibold tracking-tight`}>{label}</span>
+        {subtext && <span className={`${subLabelText} font-bold opacity-60 uppercase tracking-wider mt-0.5`}>{subtext}</span>}
       </div>
       {isSelected && (
-        <div className="flex items-center justify-center w-5 h-5 rounded-full bg-(--color-primary)/20">
+        <div className={`flex items-center justify-center ${isMobile ? 'w-4 h-4' : 'w-5 h-5'} rounded-full bg-(--color-primary)/20`}>
           <div className="w-1.5 h-1.5 rounded-full bg-(--color-primary) shadow-[0_0_10px_var(--color-primary)]"></div>
         </div>
       )}
@@ -61,7 +68,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   );
 
   const renderMainMenu = () => (
-    <div className="space-y-0.5 mt-1 animate-in fade-in slide-in-from-right-3 duration-300">
+    <div className="space-y-0.5 mt-1 transition-opacity duration-200">
       <MenuItem 
         icon={Subtitles} 
         label="Captions" 
@@ -90,7 +97,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   );
 
   const renderSpeedMenu = () => (
-    <div className="space-y-0.5 mt-1 animate-in fade-in slide-in-from-right-3 duration-300">
+    <div className="space-y-0.5 mt-1">
       {speeds.map(speed => (
         <SubMenuItem 
           key={speed}
@@ -106,7 +113,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   );
 
   const renderQualityMenu = () => (
-    <div className="space-y-0.5 mt-1 animate-in fade-in slide-in-from-right-3 duration-300">
+    <div className="space-y-0.5 mt-1">
       <SubMenuItem 
         label="Auto"
         isSelected={state.currentQuality === 'Auto'}
@@ -131,7 +138,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   );
 
   const renderSubtitlesMenu = () => (
-    <div className="space-y-0.5 mt-1 animate-in fade-in slide-in-from-right-3 duration-300">
+    <div className="space-y-0.5 mt-1">
       <SubMenuItem 
         label="Off"
         isSelected={state.currentSubtitle === 'off'}
@@ -155,21 +162,29 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   );
 
   const containerClasses = isMobile 
-    ? "absolute right-2 left-2 bottom-[70px] w-auto" // Closer to bottom on mobile
-    : "absolute right-4 bottom-22 w-72";
+    ? "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[85%] max-w-[280px]" 
+    : "absolute right-4 bottom-[90px] w-72";
 
   return (
-    <div className={`${containerClasses} max-h-[75%] overflow-y-auto bg-zinc-950/90 backdrop-blur-3xl rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] border border-white/10 p-2 text-white font-sans z-50 transition-all duration-300 scrollbar-hide`}>
-      <div className="flex items-center gap-2 px-3 pt-3 pb-3 sticky top-0 bg-transparent backdrop-blur-md z-10">
+    <>
+      <div 
+        className="absolute inset-0 z-40" 
+        onClick={(e) => {
+          e.stopPropagation();
+          toggleSettings();
+        }}
+      />
+      <div className={`${containerClasses} max-h-[85%] overflow-y-auto bg-zinc-950/95 backdrop-blur-3xl rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] border border-white/10 p-2 text-white font-sans z-50 transition-all duration-300 scrollbar-hide`}>
+      <div className={`flex items-center gap-2 px-3 ${headerPadding} sticky top-0 bg-transparent backdrop-blur-md z-10`}>
         {currentMenu !== 'main' && (
           <button 
             onClick={() => setCurrentMenu('main')}
             className="p-1.5 -ml-1 hover:bg-white/10 rounded-full transition-colors active:scale-90"
           >
-            <ChevronLeft size={20} strokeWidth={2.5} />
+            <ChevronLeft size={isMobile ? 18 : 20} strokeWidth={2.5} />
           </button>
         )}
-        <h3 className="text-[14px] font-bold tracking-tight">
+        <h3 className={`${isMobile ? 'text-[12px]' : 'text-[14px]'} font-bold tracking-tight`}>
           {currentMenu === 'main' ? 'Settings' : 
            currentMenu === 'speed' ? 'Playback speed' : 
            currentMenu === 'quality' ? 'Quality' : 'Captions'}
@@ -178,7 +193,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
           onClick={toggleSettings} 
           className="ml-auto p-1.5 -mr-1 hover:bg-red-500/20 hover:text-red-400 rounded-full transition-all active:scale-90"
         >
-          <X size={19} strokeWidth={2.5} />
+          <X size={iconSize} strokeWidth={2.5} />
         </button>
       </div>
 
@@ -189,5 +204,12 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
         {currentMenu === 'subtitles' && renderSubtitlesMenu()}
       </div>
     </div>
+    </>
   );
-};
+}, (prev, next) => {
+  return prev.state.showSettings === next.state.showSettings &&
+         prev.state.playbackSpeed === next.state.playbackSpeed &&
+         prev.state.currentQuality === next.state.currentQuality &&
+         prev.state.currentSubtitle === next.state.currentSubtitle &&
+         prev.isMobile === next.isMobile;
+});
