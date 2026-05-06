@@ -11,6 +11,7 @@ export interface VoltNexisPlayerProps {
   subtitles?: { label: string, src: string, lang: string, default?: boolean }[];
   shareUrl?: string;
   hide?: string[];
+  analytics?: boolean | string;
   
   // Callbacks
   onLike?: () => void;

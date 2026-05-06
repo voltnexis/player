@@ -10,7 +10,7 @@ class VoltNexisPlayerElement extends HTMLElement {
   static get observedAttributes() {
     return [
       'src', 'auto', 'title', 'theme', 'primary-color', 'progress-color', 
-      'preview', 'preview-vtt', 'subtitle', 'share-url', 'hide', 'width', 'height'
+      'preview', 'preview-vtt', 'subtitle', 'share-url', 'hide', 'width', 'height', 'analytics'
     ];
   }
 
@@ -62,6 +62,7 @@ class VoltNexisPlayerElement extends HTMLElement {
       hide: this.getAttribute('hide')?.split(',').map(s => s.trim()) || [],
       width: this.getAttribute('width') || undefined,
       height: this.getAttribute('height') || undefined,
+      analytics: this.hasAttribute('analytics') ? (this.getAttribute('analytics') || true) : undefined,
     };
 
     // Extract all quality-* attributes

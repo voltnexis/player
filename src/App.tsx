@@ -17,6 +17,7 @@ function App() {
             primary-color="#00ffd5"
             subtitle-en="/big-buck-bunny-en.vtt"
             preview-vtt="/bbb-thumbnails.vtt"
+            analytics="debug"
           ></voltnexis-player>
         </div>
 

@@ -1,7 +1,7 @@
-# ⚡ VoltNexis Player v3.2
+# ⚡ VoltNexis Player v3.3
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-turquoise.svg)](https://opensource.org/licenses/MIT)
-[![Release](https://img.shields.io/badge/Release-v3.2.0-blue.svg)](https://github.com/voltnexis/player/releases/tag/v3.2)
+[![Release](https://img.shields.io/badge/Release-v3.3.0-blue.svg)](https://github.com/voltnexis/player/releases/tag/v3.3)
 
 **VoltNexis Player** is a state-of-the-art, glassmorphic HTML5 video player built for the modern web. It combines elite aesthetics with high-performance interaction, featuring a persistent session-based feedback system and pro-grade gesture controls.
 
@@ -35,11 +35,11 @@
 Simply add the tag to your page. You can customize the look and feel instantly:
 
 ```html
-<vn-player 
+<voltnexis-player 
   src="path/to/video.mp4" 
   primary-color="#00ffd5" 
   clicktitle="My Premium Content">
-</vn-player>
+</voltnexis-player>
 ```
 
 ### 2. Available Properties
@@ -70,10 +70,18 @@ Simply add the tag to your page. You can customize the look and feel instantly:
 
 ### Option B: Use JSDelivr CDN
 You can link directly to a specific version without downloading anything:
-- **v3.2 (Latest)**: `https://cdn.jsdelivr.net/gh/voltnexis/player@3.2.0/dist/player.js`
-- **v3.1**: `https://cdn.jsdelivr.net/gh/voltnexis/player@3.1.0/dist/player.js`
-- **v2.8**: `https://cdn.jsdelivr.net/gh/voltnexis/player@2.8.0/dist/player.js`
+- **v3.3 (Latest)**: `https://cdn.jsdelivr.net/gh/voltnexis/player/dist/player.js`
+            `https://cdn.jsdelivr.net/gh/voltnexis/player/dist/main.css`
+- **v3.2**: `https://cdn.jsdelivr.net/gh/voltnexis/player/dist/v3.2/player.js`
+            `https://cdn.jsdelivr.net/gh/voltnexis/player/dist/v3.2/main.css`
+- **v3.1**: `https://cdn.jsdelivr.net/gh/voltnexis/player/dist/3.1/player.js`
+            `https://cdn.jsdelivr.net/gh/voltnexis/player/dist/3.1/main.css`
+- **v2.8**: `https://cdn.jsdelivr.net/gh/voltnexis/player/dist/2.8/player.js` 
+            `https://cdn.jsdelivr.net/gh/voltnexis/player/dist/2.8/main.css`
 - **Latest Main**: `https://cdn.jsdelivr.net/gh/voltnexis/player@main/dist/player.js`
+
+### 📊 Analytics (v3.3+)
+For details on the new analytics tracking system introduced in v3.3, please refer to [ANALYTICS.md](./ANALYTICS.md).
 
 ---
 

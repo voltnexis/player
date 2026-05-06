@@ -2,8 +2,24 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { PlayerState } from '../core/types';
 import { safeSessionStorage } from '../core/storage';
 
-export const useVideoPlayer = () => {
+export const useVideoPlayer = (options?: { analytics?: boolean | string }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  
+  const emitAnalytics = useCallback((action: string, details: any = {}) => {
+    if (!options?.analytics || options.analytics === 'false') return;
+    
+    const eventData = { action, timestamp: Date.now(), ...details };
+    
+    // Log to console if it's set to debug or true
+    if (options.analytics === true || options.analytics === 'true' || options.analytics === 'debug') {
+      console.info(`[VNPlayer Analytics] ${action}`, details);
+    }
+    
+    // Always dispatch a window event that developers can listen to
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('vn-analytics', { detail: eventData }));
+    }
+  }, [options?.analytics]);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [state, setState] = useState<PlayerState>({
@@ -138,8 +154,15 @@ export const useVideoPlayer = () => {
     }
   }, []);
 
-  const handleOnPlay = () => updateState({ isPlaying: true });
-  const handleOnPause = () => updateState({ isPlaying: false });
+  const handleOnPlay = () => {
+    updateState({ isPlaying: true });
+    emitAnalytics('play', { currentTime: videoRef.current?.currentTime });
+  };
+  
+  const handleOnPause = () => {
+    updateState({ isPlaying: false });
+    emitAnalytics('pause', { currentTime: videoRef.current?.currentTime });
+  };
 
   const handleTimeUpdate = () => {
     if (!videoRef.current) return;
@@ -174,6 +197,7 @@ export const useVideoPlayer = () => {
     if (videoRef.current) {
       videoRef.current.playbackRate = speed;
       updateState({ playbackSpeed: speed });
+      emitAnalytics('speed_change', { speed });
     }
   };
 
@@ -225,6 +249,7 @@ export const useVideoPlayer = () => {
     const direction = seconds > 0 ? 'forward' : 'backward';
     triggerSeekingFeedback(direction);
     videoRef.current.currentTime = Math.min(Math.max(videoRef.current.currentTime + seconds, 0), videoRef.current.duration);
+    emitAnalytics('seek', { direction, seconds, newTime: videoRef.current.currentTime });
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement> | number) => {

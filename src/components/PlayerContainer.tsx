@@ -15,7 +15,7 @@ export const PlayerContainer: React.FC<VoltNexisPlayerProps> = (props) => {
     src, auto, title, theme = 'dark', primaryColor = '#00ffd5', progressColor,
     hide = [], qualities = {}, previewVtt, subtitleVtt, shareUrl,
     onLike, onDislike, onShare, onChat, onComment, onOpenMenu, clicktitle,
-    width, height, onNext, onPrev, onNextChapter, onPrevChapter
+    width, height, onNext, onPrev, onNextChapter, onPrevChapter, analytics
   } = props;
   const {
     videoRef, containerRef, state, updateState,
@@ -23,7 +23,7 @@ export const PlayerContainer: React.FC<VoltNexisPlayerProps> = (props) => {
     handleVideoProgress, handleVideoSpeed, toggleMute, handleVolumeChange,
     toggleFullscreen, toggleTheater, toggleSettings, showControls, seek, seekTo,
     handleSubtitleChange, toggleFeedback, loadFeedback
-  } = useVideoPlayer();
+  } = useVideoPlayer({ analytics });
 
   const [currentSrc, setCurrentSrc] = React.useState(src || auto || '');
 
@@ -232,14 +232,14 @@ export const PlayerContainer: React.FC<VoltNexisPlayerProps> = (props) => {
       onMouseLeave={() => { if(state.isPlaying) state.showControls = false; }}
     >
       {/* Top Title Bar */}
-      <div className={`absolute top-0 left-0 right-0 px-4 pb-4 pt-3 bg-gradient-to-b from-black/80 to-transparent z-20 transition-opacity duration-300 flex items-start justify-between pointer-events-none ${(state.showControls && !(state.isHolding2x && isMobileOrTablet)) ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`absolute top-0 left-0 right-0 px-4 pb-8 pt-3 bg-gradient-to-b from-black/90 via-black/40 to-transparent z-20 transition-opacity duration-300 flex items-start justify-between pointer-events-none ${(state.showControls && !(state.isHolding2x && isMobileOrTablet)) ? 'opacity-100' : 'opacity-0'}`}>
         <div className="flex-1 min-w-0 pr-4">
           {clicktitle ? (
              <a href={clicktitle} target="_blank" rel="noopener noreferrer" className="inline-block pointer-events-auto">
-               <h2 className="text-base sm:text-lg font-medium tracking-wide drop-shadow-md hover:text-(--player-primary) transition-colors truncate max-w-[70vw]">{title || 'VoltNexis Player'}</h2>
+               <h2 className="text-base sm:text-lg font-semibold tracking-wide drop-shadow-[0_1px_6px_rgba(0,0,0,1)] hover:text-(--player-primary) transition-colors truncate max-w-[70vw]">{title || 'VoltNexis Player'}</h2>
              </a>
           ) : (
-            <h2 className="text-sm sm:text-lg font-medium tracking-wide drop-shadow-md truncate max-w-[70vw]">{title || 'VoltNexis Player'}</h2>
+            <h2 className="text-sm sm:text-lg font-semibold tracking-wide drop-shadow-[0_1px_6px_rgba(0,0,0,1)] truncate max-w-[70vw]">{title || 'VoltNexis Player'}</h2>
           )}
         </div>
         
@@ -247,9 +247,9 @@ export const PlayerContainer: React.FC<VoltNexisPlayerProps> = (props) => {
         {isMobileOnly && (
           <button 
             onClick={toggleSettings} 
-            className="pointer-events-auto p-1.5 transition-all hover:text-(--color-primary) bg-white/5 hover:bg-white/10 rounded-full active:scale-90"
+            className="pointer-events-auto p-1.5 transition-all text-white hover:text-(--color-primary) bg-white/10 hover:bg-white/20 rounded-full active:scale-90"
           >
-            <Settings size={18} />
+            <Settings size={18} className="drop-shadow-[0_1px_4px_rgba(0,0,0,1)]" />
           </button>
         )}
       </div>
@@ -290,7 +290,7 @@ export const PlayerContainer: React.FC<VoltNexisPlayerProps> = (props) => {
       {/* Centered Play/Pause Button */}
       {!state.isBuffering && (!state.isPlaying || (isMobileOnly && state.showControls)) && !(state.isHolding2x && isMobileOrTablet) && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-          <div className="bg-black/50 p-3 sm:p-4 rounded-full backdrop-blur-sm shadow-xl drop-shadow-2xl transition-all">
+          <div className="bg-black/20 p-3 sm:p-4 rounded-full backdrop-blur-sm shadow-xl drop-shadow-2xl transition-all">
             {state.isPlaying ? (
               <svg className="w-8 h-8 sm:w-12 sm:h-12 text-white" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                 <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
