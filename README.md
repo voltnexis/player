@@ -81,7 +81,7 @@ You can link directly to a specific version without downloading anything:
 - **Latest Main**: `https://cdn.jsdelivr.net/gh/voltnexis/player@main/dist/player.js`
 
 ### 📊 Analytics (v3.3+)
-For details on the new analytics tracking system introduced in v3.3, please refer to [ANALYTICS.md](./ANALYTICS.md).
+For details on the new analytics tracking system introduced in v3.3, please refer to [ANALYTICS.md](https://docs.voltnexis.in/player#analytics).
 
 ---
 
