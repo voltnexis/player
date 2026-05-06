@@ -54,7 +54,24 @@ Simply add the tag to your page. You can customize the look and feel instantly:
 
 ## 📥 Download & Installation
 
-### Option A: Clone & Build (Recommended)
+### Option A: Package Managers (NPM / Yarn / PNPM / Bun)
+You can install the player directly into your project:
+
+```bash
+# npm
+npm install voltnexis-player
+
+# pnpm
+pnpm add voltnexis-player
+
+# yarn
+yarn add voltnexis-player
+
+# bun
+bun add voltnexis-player
+```
+
+### Option B: Clone & Build
 1. **Clone the repo**:
    ```bash
    git clone https://github.com/voltnexis/player.git
@@ -81,7 +98,7 @@ You can link directly to a specific version without downloading anything:
 - **Latest Main**: `https://cdn.jsdelivr.net/gh/voltnexis/player@main/dist/player.js`
 
 ### 📊 Analytics (v3.3+)
-For details on the new analytics tracking system introduced in v3.3, please refer to [ANALYTICS.md](https://docs.voltnexis.in/player#analytics).
+For details on the new analytics tracking system introduced in v3.3, please refer to [ANALYTICS.md](./ANALYTICS.md).
 
 ---
 
